@@ -4,9 +4,6 @@
 
 using namespace std;
 
-const char* vertexShaderSource = "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n\tgl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}\0";
-
-
 int main(){
 
     // initializes window
