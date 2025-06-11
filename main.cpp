@@ -9,8 +9,15 @@ using namespace std;
 
 int main(){
 
+    //opens both the vertex shader and fragment shaders
     ifstream vertexShaderFile("shaders/generic.vert");
     ifstream fragmentShaderFile("shaders/generic.frag");
+
+    /***
+    *   The vertex shader collects the array of vertecies and performs operations on them
+    *   The fragment shader applies color to the vertecies; the fragment shader occurs after the
+    *   geometry shader which creates the shapes
+    ***/
 
     string temp = "";
     string vertexShaderSource = "";
