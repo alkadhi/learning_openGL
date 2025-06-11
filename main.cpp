@@ -1,10 +1,36 @@
+#include <cstdio>
 #include <iostream>
 #include "libraries/include/glad.h"
 #include <GLFW/glfw3.h>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
 int main(){
+
+    ifstream vertexShaderFile("shaders/generic.vert");
+    ifstream fragmentShaderFile("shaders/generic.frag");
+
+    string temp = "";
+    string vertexShaderSource = "";
+    string fragmentShaderSource = "";
+
+    if (vertexShaderFile.is_open() && fragmentShaderFile.is_open()){
+        while(getline(vertexShaderFile, temp)){
+            vertexShaderSource.append(temp + "\n");
+        }
+        temp = "";
+        while (getline(fragmentShaderFile, temp)){
+            fragmentShaderSource.append(temp + "\n");
+        }
+        temp = "";
+    } else {
+        cerr << "MISSING SHADERS" << endl;
+    }
+
+    vertexShaderFile.close();
+    fragmentShaderFile.close();
 
     // initializes window
     glfwInit();
