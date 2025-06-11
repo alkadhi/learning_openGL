@@ -19,6 +19,8 @@ int main(){
     *   geometry shader which creates the shapes
     ***/
 
+
+    //  this is where the code while be read into
     string temp = "";
     string vertexShaderSource = "";
     string fragmentShaderSource = "";
@@ -36,6 +38,7 @@ int main(){
         cerr << "MISSING SHADERS" << endl;
     }
 
+    //  closes the files
     vertexShaderFile.close();
     fragmentShaderFile.close();
 
@@ -50,6 +53,8 @@ int main(){
 
     //creating a GLFW window object
     GLFWwindow* window = glfwCreateWindow(800, 600, "Learning OpenGL", NULL, NULL);
+
+    //if the create-window function fails then we handle that
     if (window == NULL){
         std::cout << "Failed to open a GLFW window" << endl;
         return -1;
@@ -65,11 +70,11 @@ int main(){
     glViewport(0, 0, 800, 600);
 
     // loads color
-    glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-
+    glClearColor(0.07f, 0.13f, 0.17f, 1.0f);    // the last number is the alpha channel which allows transparency
     //sets the mode
     glClear(GL_COLOR_BUFFER_BIT);
-    //acts
+
+    //this informs the GPU to do the buffer switching on the window
     glfwSwapBuffers(window);
 
     //keeps window open until there is a reason it should close
