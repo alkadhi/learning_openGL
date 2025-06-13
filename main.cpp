@@ -8,7 +8,7 @@
 #include <math.h>
 #include <GLFW/glfw3native.h>
 
-#include "libraries/include/shader.hpp"
+#include "libraries/include/Shader.hpp"
 #include "libraries/include/VAO.hpp"
 #include "libraries/include/VBO.hpp"
 #include "libraries/include/EBO.hpp"
