@@ -40,6 +40,7 @@ int main(){
         cerr << "MISSING SHADERS" << endl;
     }
 
+    //this is where the files are stored
     const char* vertexShaderSource = vertexShaderSourceString.c_str();
     const char* fragmentShaderSource = fragmentShaderSourceString.c_str();
 
@@ -55,6 +56,7 @@ int main(){
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    //sets up a triangle
     GLfloat triangle[] = {
         -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
         0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
@@ -80,6 +82,7 @@ int main(){
     //sets the viewport to draw on
     glViewport(0, 0, 800, 600);
 
+    //creates a vertex and fragment shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
@@ -88,18 +91,20 @@ int main(){
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
 
+    //binds the combo
     GLuint shaderProgram = glCreateProgram();
-
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
 
+    //we have no use of the two as they have now been added to the shaderProgram
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-
+    // vertex array object and vertex buffer object; one holds the VBOs and the other holds the vertecies of the perimitive
     GLuint VAO, VBO;
 
+    // this must be in order!!!
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -108,9 +113,12 @@ int main(){
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
 
+    //gives it info on how much space to take in memory
+                                                    // there is three floats for each vertex!
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    //recommended to add
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -132,7 +140,9 @@ int main(){
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
+        //sets the mode so that the GPU draws together by three
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        //allows buffer swapping so that updates can be shown
         glfwSwapBuffers(window);
 
         glfwPollEvents();
