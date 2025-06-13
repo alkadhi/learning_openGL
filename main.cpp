@@ -60,7 +60,17 @@ int main(){
     GLfloat triangle[] = {
         -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
         0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f
+        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
+        -0.5 / 2, 0.5 * float(sqrt(3)) / 6, 0.0f,
+        0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f,
+        0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f
+    };
+
+    GLuint indices[] = {
+        0, 3, 5,
+        3, 2, 4,
+        5, 4, 1
+
     };
 
 
@@ -102,16 +112,20 @@ int main(){
     glDeleteShader(fragmentShader);
 
     // vertex array object and vertex buffer object; one holds the VBOs and the other holds the vertecies of the perimitive
-    GLuint VAO, VBO;
+    GLuint VAO, VBO, EBO;
 
     // this must be in order!!!
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     //gives it info on how much space to take in memory
                                                     // there is three floats for each vertex!
@@ -121,6 +135,7 @@ int main(){
     //recommended to add
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // loads color
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);    // the last number is the alpha channel which allows transparency
@@ -141,7 +156,7 @@ int main(){
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
         //sets the mode so that the GPU draws together by three
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         //allows buffer swapping so that updates can be shown
         glfwSwapBuffers(window);
 
@@ -150,6 +165,7 @@ int main(){
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 
     //destorys window and all there is of the program
