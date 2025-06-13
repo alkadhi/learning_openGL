@@ -8,45 +8,17 @@
 #include <math.h>
 #include <GLFW/glfw3native.h>
 
+#include "libraries/include/shader.hpp"
+#include "libraries/include/VAO.hpp"
+#include "libraries/include/VBO.hpp"
+#include "libraries/include/EBO.hpp"
+
 using namespace std;
 
 int main(){
 
-    //opens both the vertex shader and fragment shaders
-    ifstream vertexShaderFile("shaders/generic.vert");
-    ifstream fragmentShaderFile("shaders/generic.frag");
-
-    /***
-    *   The vertex shader collects the array of vertecies and performs operations on them
-    *   The fragment shader applies color to the vertecies; the fragment shader occurs after the
-    *   geometry shader which creates the shapes
-    ***/
-
-    //  this is where the code while be read into
-    string temp = "";
-    string vertexShaderSourceString = "";
-    string fragmentShaderSourceString = "";
-
-    if (vertexShaderFile.is_open() && fragmentShaderFile.is_open()){
-        while(getline(vertexShaderFile, temp)){
-            vertexShaderSourceString.append(temp + "\n");
-        }
-        temp = "";
-        while (getline(fragmentShaderFile, temp)){
-            fragmentShaderSourceString.append(temp + "\n");
-        }
-        temp = "";
-    } else {
-        cerr << "MISSING SHADERS" << endl;
-    }
-
-    //this is where the files are stored
-    const char* vertexShaderSource = vertexShaderSourceString.c_str();
-    const char* fragmentShaderSource = fragmentShaderSourceString.c_str();
-
-    //  closes the files
-    vertexShaderFile.close();
-    fragmentShaderFile.close();
+    const char* vertexSource("shaders/generic.vert");
+    const char* fragmentSource("shaders/generic.frag");
 
     // initializes window
     glfwInit();
@@ -92,45 +64,18 @@ int main(){
     //sets the viewport to draw on
     glViewport(0, 0, 800, 600);
 
-    //creates a vertex and fragment shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+    Shader shader(vertexSource, fragmentSource);
 
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
+    VAO vao;
+    vao.bind();
 
-    //binds the combo
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+    VBO vbo(triangle, sizeof(triangle));
+    EBO ebo(indices, sizeof(indices));
 
-    //we have no use of the two as they have now been added to the shaderProgram
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-    // vertex array object and vertex buffer object; one holds the VBOs and the other holds the vertecies of the perimitive
-    GLuint VAO, VBO, EBO;
-
-    // this must be in order!!!
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    //gives it info on how much space to take in memory
-                                                    // there is three floats for each vertex!
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    vao.linkVBO(vbo, 0);
+    vao.unbind();
+    vbo.unbind();
+    ebo.unbind();
 
     //recommended to add
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -153,8 +98,8 @@ int main(){
         //sets the mode
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
+        shader.activate();
+        vao.bind();
         //sets the mode so that the GPU draws together by three
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
         //allows buffer swapping so that updates can be shown
@@ -163,10 +108,10 @@ int main(){
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
+    vao.free();
+    vbo.free();
+    ebo.free();
+    shader.free();
 
     //destorys window and all there is of the program
     glfwDestroyWindow(window);
