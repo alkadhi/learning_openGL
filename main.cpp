@@ -58,7 +58,7 @@ int main(){
     GLfloat triangle[] = {
         -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
         0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-        0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f
+        0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f
     };
 
 
@@ -83,7 +83,8 @@ int main(){
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
-    GLuint fragmentShader = glCreateShader(GL_VERTEX_SHADER);
+
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
 
@@ -91,8 +92,7 @@ int main(){
 
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
-
-    glLinkProgram(vertexShader);
+    glLinkProgram(shaderProgram);
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
