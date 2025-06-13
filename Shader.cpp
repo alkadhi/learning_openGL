@@ -1,4 +1,4 @@
-#include "libraries/include/shader.hpp"
+#include "libraries/include/Shader.hpp"
 #include <fstream>
 
 string get_file_contents(const char* filename){
