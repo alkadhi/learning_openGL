@@ -6,7 +6,6 @@ VAO::VAO(){
 
 void VAO::linkVBO(VBO VBO, GLuint layout){
     VBO.bind();
-
     //gives it info on how much space to take in memory
                                                     // there is three floats for each vertex!
     glVertexAttribPointer(layout, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
